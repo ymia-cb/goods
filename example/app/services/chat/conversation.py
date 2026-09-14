@@ -31,6 +31,11 @@ class ConversationService:
             "mode": conversation.mode,
             "is_processing": is_processing,
         }
+    async def ensure_locked_activate_conversation(self, user_id: str) -> Conversation:
+        conversation = await self.ensure_activate_conversation(user_id)
+        await self.session.refresh(conversation, with_for_update=True)
+
+        return conversation
 
 
     async def ensure_activate_conversation(self, user_id: str) -> Conversation:
@@ -49,12 +54,10 @@ class ConversationService:
 
         conversation = await self.conversation_repo.get_ai_conversation(user_id)
         if conversation is not None:
-            flag = False
             if _has_idle_timeout(conversation):
                 conversation.mode = "CLOSED"
                 conversation.ended_at = conversation.last_active_at
-                flag = True
-            if flag:
+
                 await self.session.flush()
 
     async def get_conversation_detail(self, conversation_id: str) -> dict[str, list[dict[str, Any]]]:

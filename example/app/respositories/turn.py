@@ -22,3 +22,13 @@ class ConversationTurnRepository:
                 )
 
         )
+
+    async def find_conversation_by_id(self, conv_id: str) -> ConversationTurn | None:
+
+        return await self.session.scalar(
+            select(ConversationTurn).where(ConversationTurn.id == conv_id,
+                                           ConversationTurn.status == "COLLECTING")
+            .with_for_update()
+        )
+    def add_turn(self, turn: ConversationTurn):
+        self.session.add(turn)
