@@ -32,8 +32,12 @@ def get_outbox_service(session: Annotated[AsyncSession, Depends(get_db_session)]
 RealTimeOutBoxServiceDep = Annotated[RealTimeOutBoxService, Depends(get_outbox_service)]
 
 
-def get_message_service(session: Annotated[AsyncSession, Depends(get_db_session)]):
-    return get_message_service(session)
+def get_message_service(session: Annotated[AsyncSession, Depends(get_db_session)],
+                        conversation_service: ConversationServiceDep,
+                        turn_service: TurnServiceDep,
+                        outbox_service: RealTimeOutBoxServiceDep):
+
+    return MessageService(session, conversation_service, turn_service, outbox_service)
 
 
 MessageServiceDep = Annotated[MessageService, Depends(get_message_service)]
