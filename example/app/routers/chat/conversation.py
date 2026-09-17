@@ -2,7 +2,7 @@ from fastapi import APIRouter,Header
 from typing import Annotated
 
 from example.app.dependencies import ConversationServiceDep,get_auth_service
-from example.app.schemas.conversation import CurrentConversationResponse,ConversationDetailResponse
+from example.app.schemas.chat.conversation import CurrentConversationResponse,ConversationDetailResponse
 
 router = APIRouter(prefix="/api/v1", tags=["聊天会话路由"])
 
@@ -23,7 +23,7 @@ async def get_conversation_detail(conversation_id: str,
 
 
     authorized_user = get_auth_service().get_auth_user(authorization,"agent", "admin")
-    conversation_detail = await conversation_service.get_conversation_detail(authorized_user.user_id, conversation_id)
+    conversation_detail = conversation_service.get_conversation_detail(conversation_id)
     return conversation_detail
 
 

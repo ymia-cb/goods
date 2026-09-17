@@ -4,7 +4,7 @@ from typing import Any
 from pydantic import Field
 from pydantic import BaseModel
 
-from example.app.schemas.conversation import ConversationMode
+from example.app.schemas.chat.conversation import ConversationMode
 
 
 class MessageType(StrEnum):

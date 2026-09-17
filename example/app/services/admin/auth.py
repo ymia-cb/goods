@@ -1,7 +1,7 @@
 import jwt
 from fastapi import HTTPException, status
 
-from example.app.schemas.user import CurrentUser
+from example.app.schemas.admin.user import CurrentUser
 
 from example.common.config import get_settings
 
@@ -36,6 +36,9 @@ class AuthService:
 
         payload = jwt.decode(access_token, self.settings.jwt_secret, algorithms=[self.settings.jwt_algorithm])
         return CurrentUser.model_validate(payload)
+
+    def encode_access_token(self, current_user: CurrentUser) -> str:
+        return jwt.encode(current_user.model_dump(), self.settings.jwt_secret, algorithm=self.settings.jwt_algorithm)
 
 
 

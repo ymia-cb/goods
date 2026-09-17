@@ -3,6 +3,6 @@ from typing import Literal
 
 
 class CurrentUser(BaseModel):
-    username: str
+    user_id: str
     role:  Literal["customer", "agent", "admin"] = "customer"
 

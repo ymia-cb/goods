@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from example.common.config import get_settings
 from example.common.utils import get_utcnow
 from example.models.models import Conversation, Message
-from example.app.respositories.conversation import ConversationRepository
-from example.app.respositories.message import MessageRepository
-from example.app.respositories.turn import ConversationTurnRepository
+from example.app.respositories.chat.conversation import ConversationRepository
+from example.app.respositories.chat.message import MessageRepository
+from example.app.respositories.chat.turn import ConversationTurnRepository
 
 
 

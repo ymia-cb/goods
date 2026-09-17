@@ -1,11 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from example.app.schemas.event import STAFF_CHANNEL, RealTimeOutBoxType
-from example.app.schemas.message import ChatMessageRequest, MessageRole
-from example.app.respositories.message import MessageRepository
+from example.app.schemas.event import  RealTimeOutBoxType
+from example.app.schemas.chat.message import ChatMessageRequest, MessageRole
+from example.app.respositories.chat.message import MessageRepository
 from example.app.services.chat.conversation import ConversationService
 from example.app.services.chat.turn import TurnService
-from example.app.services.realtime import RealTimeOutBoxService
+from example.app.services.realtime import RealTimeOutBoxService, STAFF_CHANNEL
 from example.common.utils import get_utcnow
 from example.models.models import Message, Conversation
 
@@ -22,13 +22,13 @@ class MessageService:
     async def accept_message_user(self, chat_message: ChatMessageRequest, user_id: str):
 
         # user_id获取conversation和message表数据
-        duplicate_result = await self.message_repo.get_conversation_message(user_id)
+        duplicate_result = await self.message_repo.get_conversation_message(chat_message.message_id)
 
         # message_id是否存在，存在直接返回
         if duplicate_result:
-            conversation, message = duplicate_result
+            message, conversation = duplicate_result
             return {
-                "conversation_id": conversation.id,
+                "conversation_id": message.conversation_id,
                 "mode": conversation.mode,
             }
 
@@ -42,7 +42,7 @@ class MessageService:
         elif conversation.mode in ("QUEUED","HUMAN"):
             self.outbox_Service.add_realtime_outbox(
                 STAFF_CHANNEL,
-                RealTimeOutBoxType.MESSAGE_CREATE,
+                RealTimeOutBoxType.MESSAGE_CREATED,
                 conversation.id,
                 chat_message.message_id,
             )
